@@ -9,7 +9,7 @@
     // greater than the amount of the resources in the cluster.  We do however
     // allow you to overcommit if you wish.
     namespaceOvercommitFactor: 1.5,
-    cpuThrottlingPercent: 25,
+    cpuThrottlingPercent: 85,
     cpuThrottlingSelector: '',
     // Set this selector for seleting namespaces that contains resources used for overprovision
     // See https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#how-can-i-configure-overprovisioning-with-cluster-autoscaler
