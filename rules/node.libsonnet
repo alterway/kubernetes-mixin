@@ -20,8 +20,8 @@
             // below for instance.
             record: 'node_namespace_pod:kube_pod_info:',
             expr: |||
-              topk by(namespace, %(podLabel)s) (1,
-                max by (node, namespace, %(podLabel)s) (
+              topk by(%(clusterLabel)s, namespace, %(podLabel)s) (1,
+                max by (%(clusterLabel)s, node, namespace, %(podLabel)s) (
                   label_replace(kube_pod_info{%(kubeStateMetricsSelector)s,node!=""}, "%(podLabel)s", "$1", "pod", "(.*)")
               ))
             ||| % $._config,
@@ -30,7 +30,7 @@
             // This rule gives the number of CPUs per node.
             record: 'node:node_num_cpu:sum',
             expr: |||
-              count by (%(clusterLabel)s, node) (sum by (node, cpu) (
+              count by (%(clusterLabel)s, node) (sum by (%(clusterLabel)s, node, cpu) (
                 node_cpu_seconds_total{%(nodeExporterSelector)s}
               * on (namespace, %(podLabel)s) group_left(node)
                 node_namespace_pod:kube_pod_info:

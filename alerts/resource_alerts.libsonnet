@@ -25,7 +25,7 @@
           {
             alert: 'KubeCPUOvercommit',
             expr: |||
-              sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum{%(ignoringOverprovisionedWorkloadSelector)s})
+              sum(namespace:kube_pod_container_resource_requests_cpu_cores:sum{%(ignoringOverprovisionedWorkloadSelector)s}) by (%(clusterLabel)s)
                 /
               sum(kube_node_status_allocatable_cpu_cores)
                 >
@@ -148,9 +148,9 @@
           {
             alert: 'CPUThrottlingHigh',
             expr: |||
-              sum(increase(container_cpu_cfs_throttled_periods_total{container!="", %(cpuThrottlingSelector)s}[5m])) by (container, pod, namespace)
+              sum(increase(container_cpu_cfs_throttled_periods_total{container!="", %(cpuThrottlingSelector)s}[5m])) by (container, pod, namespace, %(clusterLabel)s)
                 /
-              sum(increase(container_cpu_cfs_periods_total{%(cpuThrottlingSelector)s}[5m])) by (container, pod, namespace)
+              sum(increase(container_cpu_cfs_periods_total{%(cpuThrottlingSelector)s}[5m])) by (container, pod, namespace, %(clusterLabel)s)
                 > ( %(cpuThrottlingPercent)s / 100 )
             ||| % $._config,
             'for': '15m',

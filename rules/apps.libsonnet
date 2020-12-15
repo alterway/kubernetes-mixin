@@ -26,8 +26,8 @@
             record: 'node_namespace_pod_container:container_memory_working_set_bytes',
             expr: |||
               container_memory_working_set_bytes{%(cadvisorSelector)s, image!=""}
-              * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
-                max by(namespace, pod, node) (kube_pod_info{node!=""})
+              * on (%(clusterLabel)s, namespace, pod) group_left(node) topk by(%(clusterLabel)s, namespace, pod) (1,
+                max by(%(clusterLabel)s, namespace, pod, node) (kube_pod_info{node!=""})
               )
             ||| % $._config,
           },
@@ -35,8 +35,8 @@
             record: 'node_namespace_pod_container:container_memory_rss',
             expr: |||
               container_memory_rss{%(cadvisorSelector)s, image!=""}
-              * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
-                max by(namespace, pod, node) (kube_pod_info{node!=""})
+              * on (%(clusterLabel)s, namespace, pod) group_left(node) topk by(%(clusterLabel)s, namespace, pod) (1,
+                max by(%(clusterLabel)s, namespace, pod, node) (kube_pod_info{node!=""})
               )
             ||| % $._config,
           },
@@ -44,8 +44,8 @@
             record: 'node_namespace_pod_container:container_memory_cache',
             expr: |||
               container_memory_cache{%(cadvisorSelector)s, image!=""}
-              * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
-                max by(namespace, pod, node) (kube_pod_info{node!=""})
+              * on (%(clusterLabel)s, namespace, pod) group_left(node) topk by(%(clusterLabel)s, namespace, pod) (1,
+                max by(%(clusterLabel)s, namespace, pod, node) (kube_pod_info{node!=""})
               )
             ||| % $._config,
           },
@@ -53,19 +53,19 @@
             record: 'node_namespace_pod_container:container_memory_swap',
             expr: |||
               container_memory_swap{%(cadvisorSelector)s, image!=""}
-              * on (namespace, pod) group_left(node) topk by(namespace, pod) (1,
-                max by(namespace, pod, node) (kube_pod_info{node!=""})
+              * on (%(clusterLabel)s, namespace, pod) group_left(node) topk by(%(clusterLabel)s, namespace, pod) (1,
+                max by(%(clusterLabel)s, namespace, pod, node) (kube_pod_info{node!=""})
               )
             ||| % $._config,
           },
           {
             record: 'namespace:kube_pod_container_resource_requests_memory_bytes:sum',
             expr: |||
-              sum by (namespace) (
-                  sum by (namespace, pod) (
-                      max by (namespace, pod, container) (
+              sum by (%(clusterLabel)s, namespace) (
+                  sum by (%(clusterLabel)s, namespace, pod) (
+                      max by (%(clusterLabel)s, namespace, pod, container) (
                           kube_pod_container_resource_requests_memory_bytes{%(kubeStateMetricsSelector)s}
-                      ) * on(namespace, pod) group_left() max by (namespace, pod) (
+                      ) * on(%(clusterLabel)s, namespace, pod) group_left() max by (%(clusterLabel)s, namespace, pod) (
                           kube_pod_status_phase{phase=~"Pending|Running"} == 1
                       )
                   )
@@ -75,11 +75,11 @@
           {
             record: 'namespace:kube_pod_container_resource_requests_cpu_cores:sum',
             expr: |||
-              sum by (namespace) (
-                  sum by (namespace, pod) (
-                      max by (namespace, pod, container) (
+              sum by (%(clusterLabel)s, namespace) (
+                  sum by (%(clusterLabel)s, namespace, pod) (
+                      max by (%(clusterLabel)s, namespace, pod, container) (
                           kube_pod_container_resource_requests_cpu_cores{%(kubeStateMetricsSelector)s}
-                      ) * on(namespace, pod) group_left() max by (namespace, pod) (
+                      ) * on(%(clusterLabel)s, namespace, pod) group_left() max by (%(clusterLabel)s, namespace, pod) (
                         kube_pod_status_phase{phase=~"Pending|Running"} == 1
                       )
                   )
